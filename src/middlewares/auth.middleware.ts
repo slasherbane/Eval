@@ -3,10 +3,8 @@
 import { Request, Response } from 'express';
 
 import { verify } from 'jsonwebtoken';
-import EmailException from '../exception/EmailException';
-import PasswordException from '../exception/PasswordException';
-import DateException from '../exception/DateException';
 
+/*
 
 
 // nom:Tom
@@ -110,4 +108,4 @@ export const loginMidd = (req: any, res: any, next: () => void) => {
     } catch (err) {
         return res.status(401).json({ error: true, message: err.message }).end();
     }
-}
+}*/
