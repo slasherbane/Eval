@@ -4,7 +4,6 @@ export default class Reflexion {
     // cette fonction retourne dopnc toute les propriété d'une classe avec des attributs privés.
     public static getFields(Class: any): string[] {
         let reflect = Reflect.ownKeys(Class.prototype).filter(name => {
- 
             let a = Reflect.getOwnPropertyDescriptor(Class.prototype, name)
             if (a === undefined) {
                 return;

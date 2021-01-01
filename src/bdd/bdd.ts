@@ -1,6 +1,8 @@
 import { createConnection, Connection } from 'mysql';
 import Reflexion from '../utils/Reflexion';
 import Role from '../entities/Role';
+import ConnexionBdd from './ConnexionBdd';
+import User from '../entities/User';
 
 
 
@@ -75,37 +77,66 @@ export default abstract class Bdd {
    
        }*/
 
-    static select(Class: any){
-        console.log("le silence ?");
-        return new Promise((resolve, reject) => { 
-            Reflexion.getFields(Class)
-            const bdd: Connection = createConnection({ // Init params to database
-                host: process.env.DB_HOST,
-                user: process.env.DB_USER,
-                password: process.env.DB_PASS,
-                database: process.env.DB_DATABASE,
-                socketPath: process.env.SOCKETPATH, // Socket to Mac or Linux
-                port: parseInt((process.env.PORTMYSQL === undefined) ? '3306' : process.env.PORTMYSQL) // 3306 port default to mysql
-            })
-            bdd.connect(err => {
-                if (err) console.log('Connection database error');
-            })
-            let data:any = [];
-            const query = bdd.query(`SELECT * FROM ${Class.name} ;`, [data], (error, results, fields) => { // excute request sql
 
 
+    static insert(user: User) {
+        return new Promise((resolve, reject) => {
+
+            const bdd = ConnexionBdd.getConnexion();
+            if (bdd === null) {
+                return;
+            }
+            let data: any = [];
+            let col: string = "";
+            let values: string = "";
+            let reqData: string[] = []
+            for (const key of Reflexion.getFields(User)) {
+                if (key == "id" || key == "updatedAt") {
+                    continue;
+                }
+                col += "`" + key + "`,";
+                values += "?,";
+                reqData.push(key);
+            }
+
+            data = user.getPropertiesRegisterValues();
+
+
+            col = col.slice(0, -1);
+            values = values.slice(0, -1);
+            console.log(col);
+;            const query = bdd.query(`INSERT INTO user (${col}) VALUES (${values});`, data, (error, results, fields) => { // excute request sql
                 if (error) {
-                    reject(error); // Reponse promise false => catch
+                    reject(error);
                     console.log(error);
-                } 
-                    resolve(results); // Reponse promise true => then or await
+                }
+                resolve(results); // Promesse contenant les entité
                 bdd.end(); // Close database
-         
-
             });
-              //  resolve("STOP");
         })
 
+    }
+
+
+
+    static select(Class: any) {
+        console.log("le silence ?");
+        return new Promise((resolve, reject) => {
+
+            const bdd = ConnexionBdd.getConnexion();
+            if (bdd === null) {
+                return;
+            }
+            let data: any = [];
+            const query = bdd.query(`SELECT * FROM ${Class.name} ;`, [data], (error, results, fields) => { // excute request sql
+                if (error) {
+                    reject(error);
+                    console.log(error);
+                }
+                resolve(results); // Promesse contenant les entité
+                bdd.end(); // Close database
+            });
+        })
     }
 
     /*

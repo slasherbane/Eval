@@ -1,4 +1,5 @@
 import Role from "./Role";
+import { DateUtil } from '../utils/DateUtil';
 
 export default class User {
     private id : null | number;
@@ -9,11 +10,14 @@ export default class User {
     private date_naissance: null | string;
     private role: Role;
     private sexe: string;
+    private subscription:number;
+    private createdAt:string;
+    private updatedAt:null|string;
 
 
 
-    constructor( $id :null| number , $firstname: string, $lastname: string, $email: string, $password: string, $date_naissance: null, $role: Role, $sexe: string) {
-        this.id = $id;
+    constructor( id :null| number , $firstname: string, $lastname: string, $email: string, $password: string, $date_naissance: null|string, $role: Role, $sexe: string) {
+        this.id = id;
         this.firstname = $firstname;
         this.lastname = $lastname;
         this.email = $email;
@@ -21,6 +25,12 @@ export default class User {
         this.date_naissance = $date_naissance;
         this.role = $role;
         this.sexe = $sexe;
+        let d :Date = new Date();
+        this.subscription = 0;
+        this.createdAt  = DateUtil.formatDatetime(d,'yyyy-mm-dd');
+     
+    console.log(this.createdAt);
+        this.updatedAt = null;
     }
 
 
@@ -168,6 +178,75 @@ export default class User {
         }) as string[];
     }
 
+
+    /**
+     * Getter $subscription
+     * @return {number}
+     */
+	public get $subscription(): number {
+		return this.subscription;
+	}
+
+    /**
+     * Setter $subscription
+     * @param {number} value
+     */
+	public set $subscription(value: number) {
+		this.subscription = value;
+    }
+    
+
+    /**
+     * Getter $createdAt
+     * @return {string}
+     */
+	public get $createdAt(): string {
+		return this.createdAt;
+	}
+
+    /**
+     * Setter $createdAt
+     * @param {string} value
+     */
+	public set $createdAt(value: string) {
+		this.createdAt = value;
+    }
+    
+
+    /**
+     * Getter $updatedAt
+     * @return {null}
+     */
+	public get $updatedAt(): null | string{
+		return this.updatedAt;
+	}
+
+    /**
+     * Setter $updatedAt
+     * @param {null} value
+     */
+	public set $updatedAt(value: null|string) {
+		this.updatedAt = value;
+	}
+
+
+
+
+    public getPropertiesRegisterValues(){
+        let data = []
+        data.push(this.$firstname)
+        data.push(this.lastname);
+        data.push(this.email);
+        data.push(this.password);
+        data.push(this.date_naissance);
+        data.push(this.role.$id);
+        data.push(this.sexe);
+        data.push(this.subscription);
+        data.push(this.createdAt);
+        return data;
+    }
+
+ 
 
 
 
