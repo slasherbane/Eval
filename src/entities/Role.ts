@@ -1,5 +1,12 @@
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
 export default class Role {
+
+    @PrimaryGeneratedColumn()
     private id: number | null;
+
+    @Column()
     private nom: string;
 
 

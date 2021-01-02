@@ -1,23 +1,44 @@
 import Role from "./Role";
 import { DateUtil } from '../utils/DateUtil';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export default class User {
-    private id : null | number;
+
+    @PrimaryGeneratedColumn()
+    private id: null | number;
+    @Column()
     private firstname: string;
+    @Column()
     private lastname: string;
+    @Column({name: 'email'})
     private email: string;
+    @Column()
     private password: string;
-    private date_naissance: null | string;
-    private role: Role;
+    @Column({type: "datetime", nullable: true})
+    private date_naissance: null | Date;
+    @Column()
+    private role: string;
+    @Column()
     private sexe: string;
-    private subscription:number;
-    private createdAt:string;
-    private updatedAt:null|string;
+    @Column()
+    private subscription: number;
+    @Column({type: "datetime", nullable: false})
+    private createdAt: Date;
+    @Column({type: "datetime", nullable: true})
+    private updatedAt: null | Date;
+    @Column()
+    private try: number;
+    @Column({type:"int" , nullable:true})
+    private parent: number | null;
+
+    public static exclusionInsertField: string[] = ["id", "updatedAt", "parent"];
+    public static nonRequiredField: string[] = ["id", "role", "subscription", "createdAt", "updatedAt", "try", "parent"];
 
 
 
-    constructor( id :null| number , $firstname: string, $lastname: string, $email: string, $password: string, $date_naissance: null|string, $role: Role, $sexe: string) {
-        this.id = id;
+    constructor($id: null | number, $firstname: string, $lastname: string, $email: string, $password: string, $date_naissance: null | Date, $role: string, $sexe: string,subscription:number, createdAt: null | Date, updatedAt: null | Date, atry: number, parent: null | number) {
+        this.id = $id;
         this.firstname = $firstname;
         this.lastname = $lastname;
         this.email = $email;
@@ -25,13 +46,34 @@ export default class User {
         this.date_naissance = $date_naissance;
         this.role = $role;
         this.sexe = $sexe;
-        let d :Date = new Date();
-        this.subscription = 0;
-        this.createdAt  = DateUtil.formatDatetime(d,'yyyy-mm-dd');
-     
-    console.log(this.createdAt);
-        this.updatedAt = null;
+        this.subscription = subscription;
+        if (createdAt === null) {         
+            this.createdAt = new Date();
+        }else{
+            this.createdAt = createdAt;
+        }
+        this.updatedAt = updatedAt;
+        this.try = atry;
+        this.parent = parent;
+
     }
+
+    /**
+     * Getter $id
+     * @return {null |number }
+     */
+    public get $id(): null | number {
+        return this.id;
+    }
+
+    /**
+     * Setter $id
+     * @param {null |number} value
+     */
+    public set $id(value: null | number) {
+        this.id = value;
+    }
+
 
 
     /**
@@ -104,7 +146,7 @@ export default class User {
      * Getter $date_naissance
      * @return {null | string}
      */
-    public get $date_naissance(): null | string {
+    public get $date_naissance(): null | Date{
         return this.date_naissance;
     }
 
@@ -112,7 +154,7 @@ export default class User {
      * Setter $date_naissance
      * @param {null|string } value
      */
-    public set $date_naissance(value: null | string) {
+    public set $date_naissance(value: null | Date) {
         this.date_naissance = value;
     }
 
@@ -122,7 +164,7 @@ export default class User {
      * Getter $role
      * @return {Role}
      */
-    public get $role(): Role {
+    public get $role(): string {
         return this.role;
     }
 
@@ -130,7 +172,7 @@ export default class User {
      * Setter $role
      * @param {Role} value
      */
-    public set $role(value: Role) {
+    public set $role(value: string) {
         this.role = value;
     }
 
@@ -151,30 +193,15 @@ export default class User {
         this.sexe = value;
     }
 
-    /**
-     * Getter $id
-     * @return {null }
-     */
-	public get $id(): null | number {
-		return this.id;
-	}
 
-    /**
-     * Setter $id
-     * @param {null } value
-     */
-	public set $id(value: null | number ) {
-		this.id = value;
-	}
-    
     public static getGetters(): string[] {
         return Reflect.ownKeys(this.prototype).filter(name => {
 
-           let a =  Reflect.getOwnPropertyDescriptor(this.prototype, name)
-            if(a === undefined){
-                return ;
+            let a = Reflect.getOwnPropertyDescriptor(this.prototype, name)
+            if (a === undefined) {
+                return;
             }
-            return typeof a["get"] === "function" ;
+            return typeof a["get"] === "function";
         }) as string[];
     }
 
@@ -183,70 +210,94 @@ export default class User {
      * Getter $subscription
      * @return {number}
      */
-	public get $subscription(): number {
-		return this.subscription;
-	}
+    public get $subscription(): number {
+        return this.subscription;
+    }
 
     /**
      * Setter $subscription
      * @param {number} value
      */
-	public set $subscription(value: number) {
-		this.subscription = value;
+    public set $subscription(value: number) {
+        this.subscription = value;
     }
-    
+
 
     /**
      * Getter $createdAt
      * @return {string}
      */
-	public get $createdAt(): string {
-		return this.createdAt;
-	}
+    public get $createdAt(): Date {
+        return this.createdAt;
+    }
 
     /**
      * Setter $createdAt
      * @param {string} value
      */
-	public set $createdAt(value: string) {
-		this.createdAt = value;
+    public set $createdAt(value: Date) {
+        this.createdAt = value;
     }
-    
+
 
     /**
      * Getter $updatedAt
      * @return {null}
      */
-	public get $updatedAt(): null | string{
-		return this.updatedAt;
-	}
+    public get $updatedAt(): null | Date{
+        return this.updatedAt;
+    }
 
     /**
      * Setter $updatedAt
      * @param {null} value
      */
-	public set $updatedAt(value: null|string) {
-		this.updatedAt = value;
-	}
-
-
-
-
-    public getPropertiesRegisterValues(){
-        let data = []
-        data.push(this.$firstname)
-        data.push(this.lastname);
-        data.push(this.email);
-        data.push(this.password);
-        data.push(this.date_naissance);
-        data.push(this.role.$id);
-        data.push(this.sexe);
-        data.push(this.subscription);
-        data.push(this.createdAt);
-        return data;
+    public set $updatedAt(value: null | Date) {
+        this.updatedAt = value;
     }
 
- 
+
+    /**
+     * Getter $try
+     * @return {number}
+     */
+    public get $try(): number {
+        return this.try;
+    }
+
+    /**
+     * Setter $try
+     * @param {number} value
+     */
+    public set $try(value: number) {
+        this.try = value;
+    }
+
+
+    /**
+     * Getter $parent
+     * @return {User}
+     */
+    public get $parent(): number | null {
+        return this.parent;
+    }
+
+    /**
+     * Setter $parent
+     * @param {User} value
+     */
+    public set $parent(value: number | null) {
+        this.parent = value;
+    }
+
+
+
+
+
+
+
+
+
 
 
 

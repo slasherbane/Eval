@@ -1,4 +1,5 @@
 import { Connection, createConnection } from 'mysql';
+ 
 export default class ConnexionBdd {
 
 
@@ -18,4 +19,6 @@ export default class ConnexionBdd {
         })
         return co;
     }
+
+    
 }

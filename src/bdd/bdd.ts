@@ -3,8 +3,7 @@ import Reflexion from '../utils/Reflexion';
 import Role from '../entities/Role';
 import ConnexionBdd from './ConnexionBdd';
 import User from '../entities/User';
-
-
+import {Entity} from "typeorm";
 
 
 
@@ -22,122 +21,7 @@ export default abstract class Bdd {
 
 
 
-    /**
-     *
-     * Insertion of any defined entity
-     * @static
-     * @param {string} table
-     * @param {(Client | Personne)} insert
-     * @returns {Promise < number >}
-     * @memberof MySQL
-     */
-
-    /*    
-       static insert(table: string, instance: string ): Promise < number > {
-   
-           
-           return new Promise((resolve, reject) => { // return Promise because the processing time of the database | The only way to get an answer is the "resolve()" or "reject()"
-   
-               const bdd: Connection = createConnection({ // Init params to database
-                   host: process.env.DB_HOST,
-                   user: process.env.DB_USER,
-                   password: process.env.DB_PASS,
-                   database: process.env.DB_DATABASE,
-                   socketPath: process.env.SOCKETPATH, // Socket to Mac or Linux
-                   port: parseInt((process.env.PORTMYSQL === undefined) ? '3306' : process.env.PORTMYSQL) // 3306 port default to mysql
-               })
-               bdd.connect(err => {
-                   if (err) console.log('Connection database error');
-               })
-   
-               let data = []; // Stock value
-               let columns = "";
-               let parameters = "";
-   
-               for (const [key, value] of Object.entries(instance)) { // Convert the properties of our objects to an array
-                   if (instance.attributInsert.indexOf(key) !== -1) { // Check to property to the key array because the children Object will acces property parent
-                       columns += "`" + key + "`,";
-                       parameters += "?,";
-                       data.push(value)
-                   }
-               }
-               columns = columns.slice(0, -1); // delete the last carac.
-               parameters = parameters.slice(0, -1);
-   
-               bdd.query(`INSERT INTO ${table} (${columns}) VALUES (${parameters})  `, data, (error, results, fields) => { // excute request sql
-                   if (error) {
-                       reject(error); // Reponse promise false => catch
-                       console.log(error);
-                   } else
-                       resolve(results.insertId); // Reponse promise true => then or await
-                   bdd.end(); // Close database
-               });
-   
-           })
-   
-       }*/
-
-
-
-    static insert(user: User) {
-        return new Promise((resolve, reject) => {
-
-            const bdd = ConnexionBdd.getConnexion();
-            if (bdd === null) {
-                return;
-            }
-            let data: any = [];
-            let col: string = "";
-            let values: string = "";
-            let reqData: string[] = []
-            for (const key of Reflexion.getFields(User)) {
-                if (key == "id" || key == "updatedAt") {
-                    continue;
-                }
-                col += "`" + key + "`,";
-                values += "?,";
-                reqData.push(key);
-            }
-
-            data = user.getPropertiesRegisterValues();
-
-
-            col = col.slice(0, -1);
-            values = values.slice(0, -1);
-            console.log(col);
-;            const query = bdd.query(`INSERT INTO user (${col}) VALUES (${values});`, data, (error, results, fields) => { // excute request sql
-                if (error) {
-                    reject(error);
-                    console.log(error);
-                }
-                resolve(results); // Promesse contenant les entité
-                bdd.end(); // Close database
-            });
-        })
-
-    }
-
-
-
-    static select(Class: any) {
-        console.log("le silence ?");
-        return new Promise((resolve, reject) => {
-
-            const bdd = ConnexionBdd.getConnexion();
-            if (bdd === null) {
-                return;
-            }
-            let data: any = [];
-            const query = bdd.query(`SELECT * FROM ${Class.name} ;`, [data], (error, results, fields) => { // excute request sql
-                if (error) {
-                    reject(error);
-                    console.log(error);
-                }
-                resolve(results); // Promesse contenant les entité
-                bdd.end(); // Close database
-            });
-        })
-    }
+ 
 
     /*
         static select(table: 'client' | 'personne', where ? : any): any {
