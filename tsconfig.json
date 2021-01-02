@@ -1,14 +1,15 @@
 {
     "compilerOptions": {
-        "strict": true,
-        "target": "ES6",
-        "outDir": "dist",
-        "module": "commonjs",
-        "skipLibCheck": true,
-        "removeComments": true,
-        "esModuleInterop": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "forceConsistentCasingInFileNames": true
+       "lib": [
+          "es5",
+          "es6"
+       ],
+       "target": "es5",
+       "module": "commonjs",
+       "moduleResolution": "node",
+       "outDir": "./build",
+       "emitDecoratorMetadata": true,
+       "experimentalDecorators": true,
+       "sourceMap": true
     }
-}
+ }
