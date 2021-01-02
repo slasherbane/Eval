@@ -27,8 +27,7 @@ next()
         } catch (err) {
             if (err.code === "ER_DUP_ENTRY") {
                 console.log("DUP ENTRY !");
-                return res.status(409).json({ error: "true", message: "Un compte utilisant cette adresse mail est déjà enregistré" }).end();
-                
+         
             }
             return res.status(409).json({ error: "true", message: "Une ou plusieurs données sont érronées" }).end();
         }

@@ -1,17 +1,20 @@
 import Role from "./Role";
 import { DateUtil } from '../utils/DateUtil';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { jsonIgnoreReplacer, jsonIgnore } from 'json-ignore';
 @Entity()
+@Unique("email",["email"])
 export default class User {
 
+
+    @jsonIgnore()
     @PrimaryGeneratedColumn()
     private id: null | number;
     @Column()
     private firstname: string;
     @Column()
     private lastname: string;
-    @Column({name: 'email'})
+    @Column({name: 'email',type:"varchar",length:"155"})
     private email: string;
     @Column()
     private password: string;
@@ -27,8 +30,10 @@ export default class User {
     private createdAt: Date;
     @Column({type: "datetime", nullable: true})
     private updatedAt: null | Date;
+    @jsonIgnore()
     @Column()
     private try: number;
+    @jsonIgnore()
     @Column({type:"int" , nullable:true})
     private parent: number | null;
 

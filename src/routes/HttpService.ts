@@ -9,7 +9,7 @@ import { ConnexionOrm } from '../bdd/ConnexionOrm';
 const route: Router = Router();
 route.get('/', HttpController.htmlPage);
 route.post('/test',TestController.testBddConexxion)
-route.get('/orm',ConnexionOrm.getUser)
+//route.get('/orm',ConnexionOrm.getUser)
 //route.post('/register', registerMidd, AuthController.register)
 
 export { route as HttpRoute }
