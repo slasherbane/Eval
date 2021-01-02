@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import Bdd from '../bdd/bdd';
 import { TestController } from '../controller/TestController';
 import express from 'express';
 import { HttpController } from '../controller/HtppController';
-import { ConnexionOrm } from '../bdd/ConnexionOrm';
+
 
 // Declaration des route de test et d'initialisation de /
 const route: Router = Router();

@@ -1,5 +1,4 @@
-import Bdd from '../bdd/bdd';
-import Role from '../entities/Role';
+
 import { Request, Response } from 'express';
 export class TestController {
 

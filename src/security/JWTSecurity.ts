@@ -7,10 +7,8 @@ export class JWTSecurity {
         var datum = Date.parse(strDate);
         return datum/1000;
      }
+     
     static encode(u: User) {
-
-          
-
         return sign({
             id: u.$id,
             firstname: u.$firstname,
@@ -21,7 +19,8 @@ export class JWTSecurity {
             dateNaissance: u.$date_naissance,
             createdAt: u.$createdAt,
             updatedAt: u.$updatedAt,
-            subscription: u.$subscription
+            subscription: u.$subscription,
+            connected:u.$connected
         }
             , <string>process.env.JWT_KEY, { expiresIn: "300s"})
     }
