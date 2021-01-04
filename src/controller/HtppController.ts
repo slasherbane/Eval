@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
+var path = require('path');
 
-export class HttpController{
-    static htmlPage= (req: Request, res: Response, next: () => void) => {
-     try {
-         let b :Object[] = req.body;      
-         console.log("test body "+  JSON.stringify(b));
-         console.log(req.body["test"]);
-          return res.status(200).end();
+export class HttpController {
+    static htmlPage = (req: Request, res: Response, next: () => void) => {
+        try {
+            return res.sendFile(path.join(__dirname + '/html/accueil.html'));
         } catch (err) {
             return res.status(404).json({ error: true, message: err.message }).end();
         }

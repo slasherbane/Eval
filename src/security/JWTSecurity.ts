@@ -2,12 +2,8 @@ import { decode, sign, verify } from "jsonwebtoken";
 import User from "../entities/User";
 
 export class JWTSecurity {
-
-    static toTimestamp(strDate:string){
-        var datum = Date.parse(strDate);
-        return datum/1000;
-     }
-     
+    
+    // encode un token avec les informations utilisateur
     static encode(u: User) {
         return sign({
             id: u.$id,
@@ -25,14 +21,7 @@ export class JWTSecurity {
             , <string>process.env.JWT_KEY, { expiresIn: "300s"})
     }
 
-    static isExpired(token: string) {
-        console.log("date now" + Date.now());
-        // if (req.headers.authorization && verify(split(req.headers.authorization), < string > process.env.JWT_KEY))
-        //    return next()
-        const t :any= verify(token, < string > process.env.JWT_KEY);
-       
-       (Date.now() >= t.exp * 1000 ) ? true : false 
-    }
+  
 
     
 }

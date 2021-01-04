@@ -17,7 +17,7 @@ try{
 const app = express();
 
 app.use(cors())
-//app.use(bodyParser.json())
+//leger changement du parse Json par defaut afin qu'il renvoie un 409 en cas de contenu vide
 app.use((req, res, next) => {
     bodyParser.json({
         verify: addRawBody,
@@ -33,6 +33,7 @@ app.use((req, res, next) => {
 
 function addRawBody(req:any, res:any, buf:any, encoding:any) {
     req.rawBody = buf.toString();
+     
 }
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(HttpRoute);
@@ -46,6 +47,6 @@ app.listen(process.env.PORT, () => {
     console.log(`Server run to http://localhost:${process.env.PORT}`);
 })
 }catch(err){
-    console.log("dezde")
+    console.log(err)
 }
 

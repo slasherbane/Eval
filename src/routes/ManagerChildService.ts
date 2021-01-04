@@ -9,6 +9,6 @@ import { UserMiddle } from '../middlewares/User.middle';
 const route: Router = Router();
 
 route.post('/user/child',AuthMiddle.token,AuthMiddle.tokenRole,UserMiddle.registerCheck,UserController.registerChild)
-//route.post('/register', registerMidd, AuthController.register)
-
+route.delete('/user/child',AuthMiddle.token,AuthMiddle.tokenRole,UserController.suppressChild)
+route.get('/user/child',AuthMiddle.token,AuthMiddle.tokenRole,UserController.listChild)
 export { route as ChildRoute }

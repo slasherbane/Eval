@@ -1,7 +1,21 @@
+import { createConnection, getConnection } from "typeorm";
+
 export default class Util {
+
+    // verifie si la valeur passe en parametre est vide ou inexistante.
     static checkVal(value: string) {
         return (!value || value.length === 0 || value === undefined) ? true : false;
     }
 
-    static split = (token: string) => { return token.split('Bearer ').join('') }
+    // code permetant de recupererr le token dans le header
+    static bearer = (token: string) => { return token.split('Bearer ').join('') }
+
+    // cree un connexiona la bdd s'il n'en existe pas ou essaie de la recuperer
+    static async getOrCreateConnexion(){
+        try {
+            await createConnection();
+        } catch (err) {
+            await getConnection();
+        }
+    }
 }

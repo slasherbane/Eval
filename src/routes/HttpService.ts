@@ -7,8 +7,5 @@ import { HttpController } from '../controller/HtppController';
 // Declaration des route de test et d'initialisation de /
 const route: Router = Router();
 route.get('/', HttpController.htmlPage);
-route.post('/test',TestController.testBddConexxion)
-//route.get('/orm',ConnexionOrm.getUser)
-//route.post('/register', registerMidd, AuthController.register)
 
 export { route as HttpRoute }

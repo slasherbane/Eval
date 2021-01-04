@@ -12,10 +12,8 @@ export class UserMiddle {
         try {
             const properties: string[] = Reflexion.getFields(User)
             for (const key of Reflexion.getFields(User)) {
-
                 let undef = User.nonRequiredField.find(element => element === key);
                 if (undef === undefined && Util.checkVal(req.body[key])) {
-                    console.log(key)
                     return res.status(400).json({ error: "true", message: "Une ou plusieurs données obligatoire sont manquantes" }).end();
                 }
             }
@@ -27,7 +25,8 @@ export class UserMiddle {
         } catch (err) {
             if (err.code === "ER_DUP_ENTRY") {
                 console.log("DUP ENTRY !");
-
+            }else{
+                console.log("Erreur registerCheck " +err)
             }
             return res.status(409).json({ error: "true", message: "Une ou plusieurs données sont érronées" }).end();
         }

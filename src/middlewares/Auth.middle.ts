@@ -14,17 +14,11 @@ export class AuthMiddle {
     // verifie si l'utilisateur existe ou non dans la bdd et determine dans le cas échéant un incrementation d'essaie a max 5
     static loginCheck = async (req: Request, res: Response, next: () => void) => {
         try {
-
-            let data: any = req.body;
+            const data: any = req.body;
             if (Util.checkVal(data.Password) || Util.checkVal(data.Email)) {
                 return res.status(400).json({ error: "true", message: "Email/password manquants" }).end();
             }
-
-            try {
-                await createConnection();
-            } catch (err) {
-                await getConnection();
-            }
+            Util.getOrCreateConnexion
             let repository = getRepository(User)
             await repository.findOne({ where: { email: data.Email } }).then(async u => {
                 if (!(u === undefined)) {
@@ -33,8 +27,8 @@ export class AuthMiddle {
                         return res.status(429).json({ error: "true", message: "Trop de tentive sur email " + u.$email + " (5max) - Veuillez patienter (2min)" }).end();
                     }
                     if (data.Password === u?.$password) {
-                        let content = JSON.stringify(u, jsonIgnoreReplacer);
-                        let stringUser = JSON.parse(content);
+                        const content = JSON.stringify(u, jsonIgnoreReplacer);
+                        const stringUser = JSON.parse(content);
                         u.$connected = true;
                         await repository.save(u)
                         return res.status(200).json({ error: "false", message: "L'utilisateur a été authentifié succès", token: "Bearer " + JWTSecurity.encode(u), user: stringUser })
@@ -48,6 +42,7 @@ export class AuthMiddle {
                 }
             })
         } catch (err) {
+            console.log("Erreur login check "+err)
             return res.status(401).json({ error: true, message: err }).end();
         }
     }
@@ -55,10 +50,10 @@ export class AuthMiddle {
     // verifie tous simplement si le token est valide ou non
     static token = (req: Request, res: Response, next: () => void) => {
         try {
-            if (req.headers.authorization && verify(Util.split(req.headers.authorization), <string>process.env.JWT_KEY))
+            if (req.headers.authorization && verify(Util.bearer(req.headers.authorization), <string>process.env.JWT_KEY))
                 next();
         } catch (err) {
-            console.log(err)
+            console.log("Erreur token "+err)
             return res.status(401).json({ error: true, message: "Votre token n'est pas correct" }).end();
         }
     }
@@ -67,14 +62,14 @@ export class AuthMiddle {
     static tokenRole = (req: Request, res: Response, next: () => void) => {
         try {
             const str: string = <string>req.headers.authorization;
-            const decodeStr: any = decode(Util.split(str))
+            const decodeStr: any = decode(Util.bearer(str))
             const role = decodeStr["role"];
             if (role =="Enfant") {
                 return res.status(403).json({ error: true, message: "Vos droits d'accès ne permettent pas d'accéder à la ressource" }).end();
             }
             next()
         } catch (err) {
-            console.log(err)
+            console.log("Erreur token role "+err)
             return res.status(401).json({ error: true, message: "Votre token n'est pas correct" }).end();
         }
     }

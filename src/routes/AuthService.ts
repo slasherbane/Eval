@@ -5,7 +5,7 @@ import {UserMiddle } from '../middlewares/User.middle';
 
 
 
-// declaration des route en rapport avec l'authentification , Authorization et connexion
+// Declaration des route en rapport avec l'authentification , Authorization et connexion
 const route: Router = Router();
 route.post('/login',AuthMiddle.loginCheck);
 route.put('/register',UserMiddle.registerCheck,UserController.register);
