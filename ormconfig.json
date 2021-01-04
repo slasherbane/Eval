@@ -4,7 +4,7 @@
     "port": 3306,
     "username": "root",
     "password": "",
-    "database": "evalapi",
+    "database": "Zoubida",
     "synchronize": true,
     "logging": false,
     "keepConnectionAlive": true,

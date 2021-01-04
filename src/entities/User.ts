@@ -1,7 +1,7 @@
-import Role from "./Role";
+
 import { DateUtil } from '../utils/DateUtil';
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { jsonIgnoreReplacer, jsonIgnore } from 'json-ignore';
+import { jsonIgnoreReplacer, jsonIgnore, jsonReplaceByConstant } from 'json-ignore';
 @Entity()
 @Unique("email",["email"])
 export default class User {
@@ -34,11 +34,14 @@ export default class User {
     @Column()
     private try: number;
     @jsonIgnore()
-    @Column({type:"int" , nullable:true})
+    @Column({name: 'parent',type:"int" , nullable:true})
     private parent: number | null;
+    @jsonIgnore()
+    @Column()
+    private connected:boolean;
 
-    public static exclusionInsertField: string[] = ["id", "updatedAt", "parent"];
-    public static nonRequiredField: string[] = ["id", "role", "subscription", "createdAt", "updatedAt", "try", "parent"];
+    public static exclusionInsertField: string[] = ["id", "updatedAt", "parent","connected"];
+    public static nonRequiredField: string[] = ["id", "role", "subscription", "createdAt", "updatedAt", "try", "parent","connected"];
 
 
 
@@ -60,6 +63,7 @@ export default class User {
         this.updatedAt = updatedAt;
         this.try = atry;
         this.parent = parent;
+        this.connected = false;
 
     }
 
@@ -78,8 +82,6 @@ export default class User {
     public set $id(value: null | number) {
         this.id = value;
     }
-
-
 
     /**
    * Getter $firstname
@@ -113,7 +115,6 @@ export default class User {
         this.lastname = value;
     }
 
-
     /**
      * Getter $email
      * @return {string}
@@ -145,7 +146,6 @@ export default class User {
     public set $password(value: string) {
         this.password = value;
     }
-
 
     /**
      * Getter $date_naissance
@@ -181,7 +181,6 @@ export default class User {
         this.role = value;
     }
 
-
     /**
      * Getter $sexe
      * @return {string}
@@ -197,19 +196,6 @@ export default class User {
     public set $sexe(value: string) {
         this.sexe = value;
     }
-
-
-    public static getGetters(): string[] {
-        return Reflect.ownKeys(this.prototype).filter(name => {
-
-            let a = Reflect.getOwnPropertyDescriptor(this.prototype, name)
-            if (a === undefined) {
-                return;
-            }
-            return typeof a["get"] === "function";
-        }) as string[];
-    }
-
 
     /**
      * Getter $subscription
@@ -227,7 +213,6 @@ export default class User {
         this.subscription = value;
     }
 
-
     /**
      * Getter $createdAt
      * @return {string}
@@ -243,7 +228,6 @@ export default class User {
     public set $createdAt(value: Date) {
         this.createdAt = value;
     }
-
 
     /**
      * Getter $updatedAt
@@ -261,7 +245,6 @@ export default class User {
         this.updatedAt = value;
     }
 
-
     /**
      * Getter $try
      * @return {number}
@@ -278,7 +261,6 @@ export default class User {
         this.try = value;
     }
 
-
     /**
      * Getter $parent
      * @return {User}
@@ -294,6 +276,34 @@ export default class User {
     public set $parent(value: number | null) {
         this.parent = value;
     }
+
+    /**
+     * Getter $connected
+     * @return {boolean}
+     */
+	public get $connected(): boolean {
+		return this.connected;
+	}
+
+    /**
+     * Setter $connected
+     * @param {boolean} value
+     */
+	public set $connected(value: boolean) {
+		this.connected = value;
+    }
+    
+    public static getGetters(): string[] {
+        return Reflect.ownKeys(this.prototype).filter(name => {
+
+            let a = Reflect.getOwnPropertyDescriptor(this.prototype, name)
+            if (a === undefined) {
+                return;
+            }
+            return typeof a["get"] === "function";
+        }) as string[];
+    }
+
 
 
 

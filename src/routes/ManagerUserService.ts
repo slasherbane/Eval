@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Bdd from '../bdd/bdd';
+
 import { AuthMiddle } from '../middlewares/Auth.middle';
 import { UserController } from '../controller/UserController';
 
@@ -7,6 +7,7 @@ import { UserController } from '../controller/UserController';
 const route: Router = Router();
 route.put('/user')
 route.delete('/user',AuthMiddle.token,UserController.suppress)
+route.delete('/user/off',AuthMiddle.token,UserController.disconnect)
 //route.post('/register', registerMidd, AuthController.register)
 
 export { route as UserRoute }
