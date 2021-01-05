@@ -1,4 +1,7 @@
-import { createConnection, getConnection } from "typeorm";
+import { Request } from "express";
+import { decode } from "jsonwebtoken";
+import { createConnection, getConnection, getRepository } from "typeorm";
+import User from "../entities/User";
 
 export default class Util {
 
@@ -17,5 +20,21 @@ export default class Util {
         } catch (err) {
             await getConnection();
         }
+    }
+
+    static getIdUserFromBearer(req: Request): number {
+        const decodeStr: any = Util.getDecodeBearer(req)
+        return parseInt(decodeStr["id"]);
+
+    }
+
+    static getDecodeBearer(req: Request) {
+        const str: string = <string>req.headers.authorization;
+        return decode(Util.bearer(str));
+    }
+
+    static async openUserRepo(){
+        await Util.getOrCreateConnexion();
+        return await getRepository(User);
     }
 }

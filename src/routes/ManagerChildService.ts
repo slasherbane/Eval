@@ -10,5 +10,5 @@ const route: Router = Router();
 
 route.post('/user/child',AuthMiddle.token,AuthMiddle.tokenRole,UserMiddle.registerCheck,UserController.registerChild)
 route.delete('/user/child',AuthMiddle.token,AuthMiddle.tokenRole,UserController.suppressChild)
-route.get('/user/child',AuthMiddle.token,AuthMiddle.tokenRole,UserController.listChild)
+route.get('/user/child',AuthMiddle.token,AuthMiddle.tokenRole,UserMiddle.suppressChildCheck,UserController.listChild)
 export { route as ChildRoute }

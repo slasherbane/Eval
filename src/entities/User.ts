@@ -18,7 +18,7 @@ export default class User {
     private email: string;
     @Column()
     private password: string;
-    @Column({type: "datetime", nullable: true})
+    @Column({type: "date", nullable: true})
     private date_naissance: null | Date;
     @Column()
     private role: string;
