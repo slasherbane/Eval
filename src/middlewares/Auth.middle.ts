@@ -8,6 +8,9 @@ import User from '../entities/User';
 import { JWTSecurity } from '../security/JWTSecurity';
 import { Connection, createConnection, createConnections, getConnection, getRepository, Repository } from "typeorm";
 import { jsonIgnoreReplacer } from 'json-ignore';
+import { UserController } from '../controller/UserController';
+import { Error } from '../error/Error';
+import { PasswordUtil } from '../utils/PasswordUtil';
 
 export class AuthMiddle {
 
@@ -16,17 +19,18 @@ export class AuthMiddle {
         try {
             const data: any = req.body;
             if (Util.checkVal(data.Password) || Util.checkVal(data.Email)) {
-                return res.status(400).json({ error: "true", message: "Email/password manquants" }).end();
+                // return res.status(400).json({ error: "true", message: "Email/password manquants" });
+                return Error.E400Bis(res)
             }
-            Util.getOrCreateConnexion
+            await Util.getOrCreateConnexion();
             let repository = getRepository(User)
             await repository.findOne({ where: { email: data.Email } }).then(async u => {
                 if (!(u === undefined)) {
                     if (u.$try >= 5) {
                         console.log("ici")
-                        return res.status(429).json({ error: "true", message: "Trop de tentive sur email " + u.$email + " (5max) - Veuillez patienter (2min)" }).end();
+                        return Error.E429(res, <string>u?.$email);
                     }
-                    if (data.Password === u?.$password) {
+                    if ((await PasswordUtil.compareHash(data.Password,u.$password))) {
                         const content = JSON.stringify(u, jsonIgnoreReplacer);
                         const stringUser = JSON.parse(content);
                         u.$connected = true;
@@ -35,15 +39,16 @@ export class AuthMiddle {
                     } else {
                         u.$try += parseInt("1");
                         await repository.save(u);
-                        return res.status(400).json({ error: "true", message: "Un compte utilisant cette adresse mail est déjà enregistré" })
+                        return Error.E400(res);
                     }
                 } else {
-                    return res.status(400).json({ error: "true", message: "Un compte utilisant cette adresse mail est déjà enregistré" })
+                    return Error.E400(res);
                 }
             })
         } catch (err) {
-            console.log("Erreur login check "+err)
-            return res.status(401).json({ error: true, message: err }).end();
+            console.log("Erreur login check " + err)
+            return Error.E401(res);
+
         }
     }
 
@@ -53,24 +58,24 @@ export class AuthMiddle {
             if (req.headers.authorization && verify(Util.bearer(req.headers.authorization), <string>process.env.JWT_KEY))
                 next();
         } catch (err) {
-            console.log("Erreur token "+err)
-            return res.status(401).json({ error: true, message: "Votre token n'est pas correct" }).end();
+            console.log("Erreur token " + err)
+            return Error.E401(res);
         }
     }
 
     // verifie le role dans le token
     static tokenRole = (req: Request, res: Response, next: () => void) => {
         try {
-            const str: string = <string>req.headers.authorization;
-            const decodeStr: any = decode(Util.bearer(str))
+            const decodeStr: any = Util.getDecodeBearer(req)
             const role = decodeStr["role"];
-            if (role =="Enfant") {
-                return res.status(403).json({ error: true, message: "Vos droits d'accès ne permettent pas d'accéder à la ressource" }).end();
+            if (role == "Enfant") {
+                return Error.E403(res);
             }
             next()
         } catch (err) {
-            console.log("Erreur token role "+err)
-            return res.status(401).json({ error: true, message: "Votre token n'est pas correct" }).end();
+            console.log("Erreur token role " + err)
+            return Error.E401(res);
+
         }
     }
 

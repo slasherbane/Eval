@@ -6,7 +6,7 @@
     "password": "",
     "database": "Zoubida",
     "synchronize": true,
-    "logging": false,
+    "logging": "false",
     "keepConnectionAlive": true,
     "entities": [
         "src/entities/**/*.ts"

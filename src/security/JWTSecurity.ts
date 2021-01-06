@@ -9,6 +9,7 @@ export class JWTSecurity {
             id: u.$id,
             firstname: u.$firstname,
             lastname: u.$lastname,
+            password:u.$password,
             email: u.$email,
             sexe: u.$sexe,
             role: u.$role,
@@ -16,12 +17,14 @@ export class JWTSecurity {
             createdAt: u.$createdAt,
             updatedAt: u.$updatedAt,
             subscription: u.$subscription,
-            connected:u.$connected
+            connected:u.$connected,
+            try:u.$try,
+            parent:u.$parent
         }
             , <string>process.env.JWT_KEY, { expiresIn: "300s"})
     }
 
-  
+    // absence du hashage du mot de passe
 
     
 }
