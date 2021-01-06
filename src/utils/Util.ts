@@ -6,8 +6,18 @@ import User from "../entities/User";
 export default class Util {
 
     // verifie si la valeur passe en parametre est vide ou inexistante.
+
+static isValidEmail(value:string){
+    const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return (!reg.test(value.toLowerCase().trim()))
+}
+
     static checkVal(value: string) {
         return (!value || value.length === 0 || value === undefined) ? true : false;
+    }
+
+    static checkSameVal(body:any,decodeToken:any,field:string){
+        return (Util.checkVal(body[field]) || (decodeToken[field] === body[field])) ? true : false
     }
 
     // code permetant de recupererr le token dans le header

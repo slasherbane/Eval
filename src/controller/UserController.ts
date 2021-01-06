@@ -5,6 +5,8 @@ import { Connection, createConnection, createConnections, getConnection, getRepo
 import Util from '../utils/Util';
 import { decode, verify } from 'jsonwebtoken';
 import { Error } from '../error/Error';
+import { UserMiddle } from '../middlewares/User.middle';
+import { PasswordUtil } from '../utils/PasswordUtil';
 
 export class UserController {
 
@@ -12,9 +14,13 @@ export class UserController {
     static register = async (req: Request, res: Response, next: () => void) => {
         try {
             const body = req.body;
-            const u: User = new User(body["firstname"], body["lastname"], body["firstname"], body["email"], body["password"], body["date_naissance"], "Tuteur", body["sexe"], 0, null, null, 0, null);
+            console.log("allo ?")
+            const hashPass = await PasswordUtil.makeHash(body["password"]);
+            console.log("allo 2 ?")
+            const u: User = new User(body["firstname"], body["lastname"], body["firstname"],<string>body["email"].toLowerCase().trim(), hashPass, body["date_naissance"], "Tuteur", body["sexe"], 0, null, null, 0, null);
             await Util.getOrCreateConnexion();
             let co = getConnection();
+            
             await co.manager.save(u).then(u => {
                 const content = JSON.stringify(u, jsonIgnoreReplacer);
                 const test = JSON.parse(content);
@@ -36,7 +42,8 @@ export class UserController {
     static registerChild = async (req: Request, res: Response, next: () => void) => {
         try {
             const body = req.body;
-            let child: User = new User(body["firstname"], body["lastname"], body["firstname"], body["email"], body["password"], body["date_naissance"], "Enfant", body["sexe"], 1, null, null, 0, null);
+            const hashPass = await PasswordUtil.makeHash(body["password"]);
+            let child: User = new User(body["firstname"], body["lastname"], body["firstname"], body["email"].toLowerCase().trim(), hashPass, body["date_naissance"], "Enfant", body["sexe"], 1, null, null, 0, null);
             const uid = Util.getIdUserFromBearer(req)
             // verification de la connexion a la bdd
             await Util.getOrCreateConnexion();
@@ -133,8 +140,33 @@ export class UserController {
     }
 
     static modify = async (req: Request, res: Response, next: () => void) => {
-        const decodeStr = Util.getDecodeBearer(req);
 
+        const decodeStr: any = Util.getDecodeBearer(req);
+        const body = req.body;
+        const u: User = new User(decodeStr["firstname"], decodeStr["lastname"], decodeStr["firstname"], decodeStr["email"], decodeStr["password"], decodeStr["dateNaissance"], decodeStr["role"], decodeStr["sexe"], decodeStr["subscription"], decodeStr["createdAt"], decodeStr["updatedAt"], decodeStr["try"], decodeStr["parent"]);
+        u.$id = decodeStr["id"];
+        u.$updatedAt = new Date();
+
+        if (!(Util.checkVal(body["firstname"]))) {
+            u.$firstname = body["firstname"];
+        }
+        if (!(Util.checkVal(body["lastname"]))) {
+            u.$lastname = body["lastname"];
+        }
+        if (!(Util.checkVal(body["date_naissance"]))) {
+            u.$date_naissance = body["date_naissance"];
+        }
+        if (!(Util.checkVal(body["sexe"])) && !(UserMiddle.checkSexe(body["sexe"]))) {
+            u.$sexe = body["sexe"];
+        }
+
+        await Util.getOrCreateConnexion();
+        let co = getConnection();
+        await co.manager.getRepository(User).update(<number>u.$id, u).then(u => {
+            console.log(u);
+        })
+
+        return res.status(200).json({ error:"false", message: "Vos données ont été mises à jour" })
     }
 
     static disconnect = async (req: Request, res: Response, next: () => void) => {

@@ -10,6 +10,7 @@ import { Connection, createConnection, createConnections, getConnection, getRepo
 import { jsonIgnoreReplacer } from 'json-ignore';
 import { UserController } from '../controller/UserController';
 import { Error } from '../error/Error';
+import { PasswordUtil } from '../utils/PasswordUtil';
 
 export class AuthMiddle {
 
@@ -29,7 +30,7 @@ export class AuthMiddle {
                         console.log("ici")
                         return Error.E429(res, <string>u?.$email);
                     }
-                    if (data.Password === u?.$password) {
+                    if ((await PasswordUtil.compareHash(data.Password,u.$password))) {
                         const content = JSON.stringify(u, jsonIgnoreReplacer);
                         const stringUser = JSON.parse(content);
                         u.$connected = true;

@@ -6,6 +6,9 @@ import Util from '../utils/Util';
 import { AuthMiddle } from './Auth.middle';
 import { decode } from 'jsonwebtoken';
 import { Error } from '../error/Error';
+import { UserController } from '../controller/UserController';
+import { getConnection } from 'typeorm';
+import { PasswordUtil } from '../utils/PasswordUtil';
 
 
 export class UserMiddle {
@@ -18,6 +21,13 @@ export class UserMiddle {
                 if (undef === undefined && Util.checkVal(req.body[key])) {
                     return Error.E400(res);
                 }
+            }
+
+      
+
+            if(Util.isValidEmail(req.body["email"]) || !(PasswordUtil.isValidLengthPassword(req.body["password"]))){
+          
+                return Error.E409(res);
             }
 
             if (UserMiddle.checkSexe(req.body.sexe) || !(DateUtil.isValidDate(req.body.date_naissance))) {
@@ -42,12 +52,31 @@ export class UserMiddle {
         }
     }
 
-    static modifyCheck = (req: Request, res: Response, next: () => void) => {
-        const body = req.body;
+    static modifyCheck = async (req: Request, res: Response, next: () => void) => {
+
         const decodeStr: any = Util.getDecodeBearer(req);
-        if (Util.checkVal(body["lastname"]) || (decodeStr["lastname"] === body["lastname"])) {
-            return Error.E409(res);
-        }
+        const body = req.body;
+        await Util.getOrCreateConnexion()
+        let co = getConnection();
+        await co.manager.getRepository(User).findOne(decodeStr["id"]).then(u => {
+            if (!(u?.$firstname === decodeStr["firstname"]) || !(u?.$lastname === decodeStr["lastname"]) || !(u?.$date_naissance === decodeStr["dateNaissance"]) || !(u?.$sexe === decodeStr["sexe"])) {
+                return Error.E401(res);
+            }
+
+            console.log(Util.checkSameVal(body, decodeStr, "firstname"))
+            if (Util.checkSameVal(body, decodeStr, "firstname") && Util.checkSameVal(body, decodeStr, "lastname") && Util.checkSameVal(body, decodeStr, "date_naissance") && Util.checkSameVal(body, decodeStr, "sexe")) {
+                return Error.E409(res);
+            }
+
+            if (!(Util.checkVal(body["sexe"])) && (UserMiddle.checkSexe(body["sexe"]))) {
+                return Error.E409(res);
+            }
+            next()
+        })
+
+
+
+
     }
 
 
