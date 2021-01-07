@@ -3,14 +3,15 @@ import {createConnection} from "typeorm";
 import {User} from "./src/entities/User";
 import {Banque} from "./src/entities/Banque";
 
+
 createConnection().then(async connection => {
 
     console.log("Inserting a new user into the database...");
     const user = new User();
     user.id = 3
-    user.firstName = "testa1";
-    user.lastName = "testi1";
-    user.age = 12;
+    user.firstName = "Zoubida";
+    user.lastName = "cd";
+    user.age = 20;
 
     const banque = new Banque();
     banque.id = 3;
