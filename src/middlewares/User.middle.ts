@@ -23,10 +23,7 @@ export class UserMiddle {
                 }
             }
 
-      
-
-            if(Util.isValidEmail(req.body["email"]) || !(PasswordUtil.isValidLengthPassword(req.body["password"]))){
-          
+            if(Util.isValidEmail(req.body["email"]) || !(PasswordUtil.isValidLengthPassword(req.body["password"]))){         
                 return Error.E409(res);
             }
 
@@ -36,18 +33,13 @@ export class UserMiddle {
             }
             next()
         } catch (err) {
-            if (err.code === "ER_DUP_ENTRY") {
-                console.log("DUP ENTRY !");
-            } else {
-                console.log("Erreur registerCheck " + err)
-            }
+                console.log("Erreur registerCheck " + err)          
             return Error.E409(res)
         }
     }
 
     static suppressChildCheck = (req: Request, res: Response, next: () => void) => {
         if (Util.checkVal(req.body["id child"])) {
-
             return Error.E403(res);
         }
     }
