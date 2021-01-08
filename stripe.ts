@@ -12,8 +12,8 @@ app.listen(3000, function() {
 
 const createCustomer = async () => {
     const params: Stripe.CustomerCreateParams = {
-      email: 'mike@gmail.com',
-      name: "Mike",
+      email: 'steave@gmail.com',
+      name: "Steave",
       description: "from node"
     };
 
@@ -22,7 +22,7 @@ const createCustomer = async () => {
   
     console.log(customer.id);
 }
-// createCustomer();
+createCustomer();
 
 
 //récuperation des données
@@ -55,8 +55,8 @@ const sripe = stribe('sk_test_51I4PzpAZwGxhoksAyHbLLtUXS7Cvj9dBhC7mgDjnuSvSB68L1
 
 // Token is created using Checkout or Elements!
 // Get the payment token ID submitted by the form:
-var token = request.body.stripeToken; // Using Express
+// var token = request.body.stripeToken; // Using Express
 
-sripe.orders.pay('or_1I6m17AZwGxhoksAkTNftdE1', {
-  source: token,
-})
+// sripe.orders.pay('or_1I6m17AZwGxhoksAkTNftdE1', {
+//   source: token,
+// })

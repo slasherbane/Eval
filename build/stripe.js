@@ -35,71 +35,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
-var typeorm_1 = require("typeorm");
-var User_1 = require("./src/entities/User");
-var Audio_1 = require("./src/entities/Audio");
-var cors_1 = __importDefault(require("cors"));
-var body_parser_1 = __importDefault(require("body-parser"));
-var dotenv_1 = require("dotenv");
-var express_1 = __importDefault(require("express"));
-var Audio_routes_1 = require("./src/routes/Audio_routes");
-var affichage = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var err_1, connection, user, audio, users, banques;
+var express = require('express');
+var stripe1 = require('stripe');
+var stripe = stripe1('sk_test_51I4PzpAZwGxhoksAyHbLLtUXS7Cvj9dBhC7mgDjnuSvSB68L1JGCl7GKn7ymJLXLmbMtdS9cWTejk4ACpYQx7xie00ZzZxCyyh');
+var app = express();
+app.listen(3000, function () {
+    console.log("server runnng");
+});
+var createCustomer = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var params, customer;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 4]);
-                return [4 /*yield*/, typeorm_1.createConnection()];
+                params = {
+                    email: 'steave@gmail.com',
+                    name: "Steave",
+                    description: "from node"
+                };
+                return [4 /*yield*/, stripe.customers.create(params)];
             case 1:
-                _a.sent();
-                return [3 /*break*/, 4];
-            case 2:
-                err_1 = _a.sent();
-                return [4 /*yield*/, typeorm_1.getConnection()];
-            case 3:
-                _a.sent();
-                return [3 /*break*/, 4];
-            case 4: return [4 /*yield*/, typeorm_1.getConnection()];
-            case 5:
-                connection = _a.sent();
-                console.log("Inserting a new user into the database...");
-                user = new User_1.User();
-                user.id = 3;
-                user.firstName = "Zoubida";
-                user.lastName = "cd";
-                user.age = 20;
-                audio = new Audio_1.Audio(new Date());
-                audio.name = "test2";
-                audio.url = "https://www.youtube.com/watch?v=YQHsXMglC9A&list=PLc7M6di8_xBtaqBickFmlGxldFiM9jXwy&index=1";
-                audio.time = "6:06";
-                // await connection.manager.save(user);
-                //await connection.manager.save(audio);
-                console.log("id de la chanson: " + audio.id);
-                console.log("Loading users from the database...");
-                return [4 /*yield*/, connection.manager.find(User_1.User)];
-            case 6:
-                users = _a.sent();
-                return [4 /*yield*/, connection.manager.find(Audio_1.Audio)];
-            case 7:
-                banques = _a.sent();
-                console.log("Loaded users: ", users);
-                //console.log("Loaded accounts: ", banques);
-                console.log("Zoubida");
+                customer = _a.sent();
+                console.log(customer.id);
                 return [2 /*return*/];
         }
     });
 }); };
-dotenv_1.config();
-var app = express_1.default();
-app.use(cors_1.default());
-app.use(body_parser_1.default.urlencoded({ extended: true }));
-app.use(Audio_routes_1.routeAudio);
-app.listen(process.env.PORT, function () {
-    console.log('Server run to http://localhost:${process.env.PORT}');
-});
-//# sourceMappingURL=index.js.map
+createCustomer();
+//récuperation des données
+// const stRipe = require('stripe')('sk_test_51I4PzpAZwGxhoksAyHbLLtUXS7Cvj9dBhC7mgDjnuSvSB68L1JGCl7GKn7ymJLXLmbMtdS9cWTejk4ACpYQx7xie00ZzZxCyyh');
+// const customer =  stRipe.customers.retrieve(
+//   'cus_IiBJW75mCFHEln'
+// );
+// la supression des données
+// const sTripe = require('stripe')('sk_test_51I4PzpAZwGxhoksAyHbLLtUXS7Cvj9dBhC7mgDjnuSvSB68L1JGCl7GKn7ymJLXLmbMtdS9cWTejk4ACpYQx7xie00ZzZxCyyh');
+// const deleted =  sTripe.customers.del(
+//   'cus_IiC4LbIk7uH95u'
+// );
+// const stripe3 = require('stripe')('sk_test_51I4PzpAZwGxhoksAyHbLLtUXS7Cvj9dBhC7mgDjnuSvSB68L1JGCl7GKn7ymJLXLmbMtdS9cWTejk4ACpYQx7xie00ZzZxCyyh');
+// const product =  stripe3.products.create({
+//   name: 'Gold Special',
+// });
+var stribe = require('stripe');
+var sripe = stribe('sk_test_51I4PzpAZwGxhoksAyHbLLtUXS7Cvj9dBhC7mgDjnuSvSB68L1JGCl7GKn7ymJLXLmbMtdS9cWTejk4ACpYQx7xie00ZzZxCyyh');
+// Token is created using Checkout or Elements!
+// Get the payment token ID submitted by the form:
+// var token = request.body.stripeToken; // Using Express
+// sripe.orders.pay('or_1I6m17AZwGxhoksAkTNftdE1', {
+//   source: token,
+// })
+//# sourceMappingURL=stripe.js.map
