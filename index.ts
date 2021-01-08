@@ -10,6 +10,7 @@ import { SubscriptionRoute } from "./src/routes/SubscriptionService";
 import { AuthRoute } from "./src/routes/AuthService";
 import { UserRoute } from "./src/routes/ManagerUserService";
 import { ChildRoute } from "./src/routes/ManagerChildService";
+import { AudioRoute } from "./src/routes/AudioService";
 
 
 config();
@@ -40,6 +41,7 @@ app.use(HttpRoute);
 app.use(AuthRoute);
 app.use(UserRoute);
 app.use(ChildRoute);
+app.use(AudioRoute)
 // si JWT a verifier partout mettre le middleware ici app.use() est generale app.type_methode ne concerne que cette route specific
 //app.use('/auth',authMidd, AuthRoute); exemple 
 

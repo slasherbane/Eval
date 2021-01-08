@@ -19,7 +19,7 @@ export class UserController {
             console.log("allo 2 ?")
             const u: User = new User(body["firstname"], body["lastname"], body["firstname"],<string>body["email"].toLowerCase().trim(), hashPass, body["date_naissance"], "Tuteur", body["sexe"], 0, null, null, 0, null);
             await Util.getOrCreateConnexion();
-            let co = getConnection();
+            let co = await getConnection();
             
             await co.manager.save(u).then(u => {
                 const content = JSON.stringify(u, jsonIgnoreReplacer);
@@ -47,7 +47,7 @@ export class UserController {
             const uid = Util.getIdUserFromBearer(req)
             // verification de la connexion a la bdd
             await Util.getOrCreateConnexion();
-            let co = getConnection();
+            let co = await getConnection();
             await co.manager.findAndCount<User>(User, { where: { parent: uid } }).then(async results => {
                 if (results[1] >= 3) {
                     return Error.E409Child(res);
@@ -72,7 +72,7 @@ export class UserController {
         try {
             const idUser = Util.getIdUserFromBearer(req)
             await Util.getOrCreateConnexion();
-            const repo = getRepository(User)
+            const repo = await getRepository(User)
             await repo.findOne(idUser).then(async u => {
                 if (u === undefined) {
                     return Error.E401(res);
@@ -118,7 +118,8 @@ export class UserController {
             const uid: number = Util.getIdUserFromBearer(req);
             // verification de la connexion a la bdd
             await Util.getOrCreateConnexion();
-            let co = getConnection();
+            let co = await getConnection();
+
             await co.manager.findAndCount<User>(User, { where: { parent: uid } }).then(async results => {
                 console.log(results[1])
                 if (results === undefined || results[1] < 1 || results[1] === undefined) {
@@ -161,7 +162,7 @@ export class UserController {
         }
 
         await Util.getOrCreateConnexion();
-        let co = getConnection();
+        let co = await getConnection();
         await co.manager.getRepository(User).update(<number>u.$id, u).then(u => {
             console.log(u);
         })

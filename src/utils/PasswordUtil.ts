@@ -2,6 +2,8 @@ import { compare, hash } from "bcrypt";
 
 export class PasswordUtil{
 
+
+    // classe concernant le hashage et la comparaison en BDD du mot de passe
     private static MIN_SIZE = 8;
     private static SALT = 12;
 
